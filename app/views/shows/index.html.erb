@@ -1,0 +1,28 @@
+<%= form_tag('/shows', method: 'get') do %>
+	<h2>Search shows: <%= text_field_tag :sq %><%= submit_tag "Search" %></h2>
+<% end %>
+<% @all_shows.each do |s_show| %>
+	<div style="">
+		<h3>Name: <%= s_show.name %></h3>
+		<span>Channel: <%= s_show.channel_name %></span>
+		<span class="fav_show" id="fav_show_<%= s_show.id %>" data-id="<%= s_show.id %>"><%= image_tag s_show.favourite ? "unlike.png" : "favourite.jpeg" , style: "height: 30px;" %></span><br />
+		<span>Timing: <%= s_show.start_time.strftime('%I: %M %p') %> - <%= s_show.end_time.strftime('%I: %M %p') %></span>
+	</div>
+<% end %>
+<script type="text/javascript">
+	$(".fav_show").click(function(){
+		show_id = $(this).data('id');
+		$.ajax({
+			url: '/shows/like_unlike',
+			method: 'post',
+			data: {id: show_id},
+			success: function(data){
+				if (data['like']){
+					$("#fav_show_"+show_id).html("<img src= '/assets/unlike.png' style= 'height: 30px;'>");
+				} else {
+					$("#fav_show_"+show_id).html("<img src= '/assets/favourite.jpeg' style= 'height: 30px;'>");
+				}
+			}
+		})
+	})
+</script>
